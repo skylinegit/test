@@ -1,0 +1,32 @@
+	
+with qryPFPReportingPages as (SELECT tblPFPDonationsBankedPages.PfpPageid, tblPFPDonationsBankedPages.CharityId, tblPFPDonationsBankedPages.EventId, tblPFPDonationsBankedPages.Donations, tblPFPDonationsBankedPages.PageUrl, tblPFPDonationsBankedPages.EventName, CCur(IIf(tblPFPDonationsBankedPages.tourcost='NULL' Or tblPFPDonationsBankedPages.tourcost is null,0,tblPFPDonationsBankedPages.tourcost)) AS eventtourcost, tblPFPDonationsBankedPages.Firstname, tblPFPDonationsBankedPages.Surname, tblPFPDonationsBankedPages.Amount, tblPFPDonationsBankedPages.CardFeeAmount, Format([StandardTransactionFee],"Fixed") AS standardfee, tblPFPDonationsBankedPages.FeeException, tblPFPDonationsBankedPages.ChosenTransactionFee, tblPFPDonationsBankedPages.FeeVAT, tblPFPDonationsBankedPages.Deductions, tblPFPDonationsBankedPages.NetDonation, tblPFPDonationsBankedPages.AmountWithHeldForTourCost, tblPFPDonationsBankedPages.CharityTotal, tblPFPDonationsBankedPages.BankingRun, tblPFPTotalsBankedArchive.bankeddate AS datebanked
+FROM tblPFPDonationsBankedPages INNER JOIN tblPFPTotalsBankedArchive ON (tblPFPDonationsBankedPages.CharityId = tblPFPTotalsBankedArchive.CharityID) AND (tblPFPDonationsBankedPages.BankingRun = tblPFPTotalsBankedArchive.BankingRun)
+GROUP BY tblPFPDonationsBankedPages.PfpPageid, tblPFPDonationsBankedPages.CharityId, tblPFPDonationsBankedPages.EventId, tblPFPDonationsBankedPages.Donations, tblPFPDonationsBankedPages.PageUrl, tblPFPDonationsBankedPages.EventName, tblPFPDonationsBankedPages.Firstname, tblPFPDonationsBankedPages.Surname, tblPFPDonationsBankedPages.Amount, tblPFPDonationsBankedPages.CardFeeAmount, Format([StandardTransactionFee],"Fixed"), tblPFPDonationsBankedPages.FeeException, tblPFPDonationsBankedPages.ChosenTransactionFee, tblPFPDonationsBankedPages.FeeVAT, tblPFPDonationsBankedPages.Deductions, tblPFPDonationsBankedPages.NetDonation, tblPFPDonationsBankedPages.AmountWithHeldForTourCost, tblPFPDonationsBankedPages.CharityTotal, tblPFPDonationsBankedPages.BankingRun, tblPFPTotalsBankedArchive.bankeddate, tblPFPDonationsBankedPages.TourCost )
+
+SELECT qryPFPReportingPages.PfpPageid, qryPFPReportingPages.CharityId, qryPFPReportingPages.EventId, qryPFPReportingPages.Donations, qryPFPReportingPages.PageUrl, qryPFPReportingPages.EventName, qryPFPReportingPages.eventtourcost AS tourcost, qryPFPReportingPages.Firstname, qryPFPReportingPages.Surname, qryPFPReportingPages.Amount, qryPFPReportingPages.CardFeeAmount, qryPFPReportingPages.standardfee, qryPFPReportingPages.FeeException, qryPFPReportingPages.ChosenTransactionFee, qryPFPReportingPages.FeeVAT, qryPFPReportingPages.Deductions, qryPFPReportingPages.NetDonation, qryPFPReportingPages.AmountWithHeldForTourCost, qryPFPReportingPages.CharityTotal, qryPFPReportingPages.BankingRun, qryPFPReportingPages.datebanked
+FROM qryPFPReportingPages;
+
+delete [530271-DB1].charityreporting.dbo.PFPBanking_Donations ;
+insert into  [530271-DB1].charityreporting.dbo.PFPBanking_Donations
+SELECT [pfppageid]
+           ,[CharityID]
+           ,[eventid]
+           ,[donations]
+           ,[pageurl]
+           ,[eventname]
+           ,[tourcost]
+           ,[firstname]
+           ,[surname]
+           ,[amount]
+           ,[cardfeeamount]
+           ,[standardtransactionfee]
+           ,[feeexception]
+           ,[chosentransactionfee]
+           ,[feevat]
+           ,[deductions]
+           ,[netdonation]
+           ,[amountwithheldfortourcost]
+           ,[charitytotal]
+           ,[bankingrun]
+           ,[datebanked]
+  FROM [530271-DB1].[CharityReporting].[dbo].[PFPBanking_Donations_temp]
