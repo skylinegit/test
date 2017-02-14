@@ -1,0 +1,9 @@
+  Try
+                        Dim ds As DataSet
+                        ds = ChallengeDB.GetEvent(strChallenge)
+                        Dim dv As DataView
+                        dv = ds.Tables(0).DefaultView()
+                        strEventName = dv(0)("SimpleName")
+                    Catch eventmissing As DivideByZeroException
+                        Response.Redirect("http://www.skylineoverseas.co.uk/closed-event.aspx")
+                    End Try
